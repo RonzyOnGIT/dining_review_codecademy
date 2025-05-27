@@ -17,9 +17,7 @@ import com.diningreview.dining.exceptions.UsernameAlreadyExistsException;
 @Service
 public class UserService {
 
-
     private final UserRepository userRepository;
-
 
     public UserService(final UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -37,6 +35,21 @@ public class UserService {
         }
 
         return userOptional.get();
+
+    }
+    
+    // returns false either if user is not found or if not a moderator
+    public Boolean checkIfUserIsModerator(String userName) {
+        Optional<User> userOptional = this.userRepository.findByUserName(userName);
+
+        // user not found
+        if (!userOptional.isPresent()) {
+            return false;
+        }
+
+        User retrievedUser = userOptional.get();
+
+        return retrievedUser.getIsModerator();
 
     }
 

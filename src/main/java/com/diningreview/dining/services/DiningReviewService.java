@@ -9,16 +9,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.diningreview.dining.entities.DiningReview;
 import com.diningreview.dining.entities.User;
+import com.diningreview.dining.entities.Restaurant;
 import com.diningreview.dining.repositories.DiningReviewRepository;
 import com.diningreview.dining.services.UserService;
 import com.diningreview.dining.entities.AdminReview;
+import com.diningreview.dining.exceptions.CannotPerformModeratorActionException;
 
 public class DiningReviewService {
 
     // to make calls to dining review database
     private final DiningReviewRepository diningReviewRepository;
 
-    // to use functions that perform business logic from User database
+    // to use functions that perform business logic from User database like making sure user exists before approving review
     private final UserService userService;
 
     public DiningReviewService(final DiningReviewRepository diningReviewRepository, final UserService userService) {
@@ -26,14 +28,26 @@ public class DiningReviewService {
         this.userService = userService;
     }
 
-    // @GetMapping
     public List<DiningReview> getPendingReviews() {
         return this.diningReviewRepository.findByReviewStatus(AdminReview.PENDING);
     }
 
-    // @PutMapping
     // either approve or reject review, not just approve
-    public DiningReview approveReview(DiningReview diningReview, Boolean approved) {
+    public DiningReview approveReview(DiningReview diningReview, Boolean approved, String userName) {
+
+        try {
+
+            // if user is not a moderator, then cannot approve/disapprove
+            if (!this.userService.checkIfUserIsModerator(userName)) {
+                throw new CannotPerformModeratorActionException("Username: " + userName + " does not have moderator privileges");
+            }
+
+        } catch (CannotPerformModeratorActionException e) {
+
+            System.err.println(e.getMessage());
+            return null;
+
+        }
 
         Optional<DiningReview> diningReviewOptional = this.diningReviewRepository.findById(diningReview.getId());
 
@@ -54,10 +68,13 @@ public class DiningReviewService {
     }
 
     // @PostMapping
-    public DiningReview createReview(DiningReview diningReview, String userName) {
+    public DiningReview createReview(DiningReview diningReview, String userName, Long id) {
         
         // getUser() handles if user is not found
         User retrievedUser = this.userService.getUser(userName);
+
+        // UNFINISHED: need to finish restaurant service class to fetch restaurant from id, to be able to map a restaurant to a review
+        // Restaurant retrievedRestaurant = 
 
         return this.diningReviewRepository.save(diningReview);
         
@@ -71,12 +88,11 @@ public class DiningReviewService {
         List<DiningReview> reviewsFromRestaurant = this.diningReviewRepository.findByRestaurant_IdAndReviewStatus(id, AdminReview.APPROVED);
         
         if (reviewsFromRestaurant.isEmpty()) {
-            // return 
+            return null;
         } else {
-
+            return reviewsFromRestaurant;
         }
 
-        return new ArrayList<DiningReview>();
     }
 
     

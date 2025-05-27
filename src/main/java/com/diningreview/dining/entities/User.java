@@ -46,6 +46,8 @@ public class User {
     @Column(name = "INTEREST_IN_DAIRY_ALLERGIES")
     private Boolean interestInDairyAllergies;
     
+    @Column(name = "IS_MODERATOR", nullable = false)
+    private Boolean isModerator = false;
 
     
 }

@@ -41,7 +41,10 @@ public class Restaurant {
     @Column(name = "TOTAL_RATING")
     private Float totalRating;
 
-    
+    @Column(name = "ZIP_CODE")
+    private String zipCode;
+
+    // one restaurant will map to multiple reviews and the mapping is handled by restaurant so it avoids the need to create a third table
     @OneToMany(mappedBy="restaurant")
     private List<DiningReview> reviews;
     

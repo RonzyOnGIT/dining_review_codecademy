@@ -48,6 +48,7 @@ public class DiningReview {
     @Enumerated(EnumType.STRING)
     private AdminReview reviewStatus;
 
+    // Defining a relationship to table of restaurants, ManyToOne meaning that multiple reviews map to one restaurant
     @ManyToOne
     @JoinColumn(name = "RESTAURANT_ID")
     private Restaurant restaurant;

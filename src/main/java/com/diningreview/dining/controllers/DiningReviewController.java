@@ -32,20 +32,21 @@ public class DiningReviewController {
 
     // refresher that requestparam gets the queried values from url like approve?approved=true&userName=john
     @PutMapping("/approve")
-    public DiningReview approveReview(@RequestBody DiningReview diningReview, @RequestParam Boolean approved, @RequestParam String userName) {
-        
+    public DiningReview approveReview(@RequestBody DiningReview diningReview, @RequestParam Boolean approved, @RequestParam String userName) {        
         return this.diningReviewService.approveReview(diningReview, approved, userName);
+    }
 
+    @GetMapping("/{id}")
+    public List<DiningReview> getApprovedReviewsForRestaurant(@PathVariable Long id) {
+        return this.getApprovedReviewsForRestaurant(id);
+    }
+
+    @PostMapping("/{id}")
+    public DiningReview createReview(@RequestBody DiningReview diningReview, @RequestParam(defaultValue = "anonymous") String userName, @PathVariable Long id) {
+        return this.diningReviewService.createReview(diningReview, userName, id);
     }
 
 
-    // Come back to this after finishing restaurant service and controller class
-    // @PostMapping("/{id}")
-    // public DiningReview createReview(@RequestBody DiningReview diningReview, String userName, @PathVariable("id") Long id) {
-
-    //     this.diningReviewService
-    //     return new DiningReview();
-    // }
 
     
 }

@@ -92,8 +92,8 @@ public class UserService {
             userToUpdate.setCity(user.getCity());
         }
 
-        if (user.getState() != null) {
-            userToUpdate.setState(user.getState());
+        if (user.getStates() != null) {
+            userToUpdate.setStates(user.getStates());
         }
 
         if (user.getZipCode() != null) {

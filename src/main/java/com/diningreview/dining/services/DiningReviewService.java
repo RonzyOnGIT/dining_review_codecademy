@@ -5,16 +5,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.diningreview.dining.entities.DiningReview;
 import com.diningreview.dining.entities.User;
 import com.diningreview.dining.entities.Restaurant;
 import com.diningreview.dining.repositories.DiningReviewRepository;
+import com.diningreview.dining.services.RestaurantService;
 import com.diningreview.dining.services.UserService;
 import com.diningreview.dining.entities.AdminReview;
 import com.diningreview.dining.exceptions.CannotPerformModeratorActionException;
 
+@Service
 public class DiningReviewService {
 
     // to make calls to dining review database
@@ -23,9 +26,12 @@ public class DiningReviewService {
     // to use functions that perform business logic from User database like making sure user exists before approving review
     private final UserService userService;
 
-    public DiningReviewService(final DiningReviewRepository diningReviewRepository, final UserService userService) {
+    private final RestaurantService restaurantService;
+
+    public DiningReviewService(final DiningReviewRepository diningReviewRepository, final UserService userService, final RestaurantService restaurantService) {
         this.diningReviewRepository = diningReviewRepository;
         this.userService = userService;
+        this.restaurantService = restaurantService;
     }
 
     public List<DiningReview> getPendingReviews() {
@@ -67,20 +73,24 @@ public class DiningReviewService {
 
     }
 
-    // @PostMapping
     public DiningReview createReview(DiningReview diningReview, String userName, Long id) {
         
         // getUser() handles if user is not found
         User retrievedUser = this.userService.getUser(userName);
 
-        // UNFINISHED: need to finish restaurant service class to fetch restaurant from id, to be able to map a restaurant to a review
-        // Restaurant retrievedRestaurant = 
+        // make sure restuarant with id exists before posting review
+        Restaurant fetchedRestaurant = this.restaurantService.getRestaurantById(id);
 
-        return this.diningReviewRepository.save(diningReview);
+
+        if (fetchedRestaurant != null) {
+            diningReview.setRestaurant(fetchedRestaurant);
+            return this.diningReviewRepository.save(diningReview);
+        }
+    
+        return null;
         
     }
 
-    // make function that will fetch all approved reviews for a restaurant to be able to calculate average, ig I gotta update the restaurants score in this function as well?
     // @GetMapping
     public List<DiningReview> getApprovedReviewsForRestaurant(Long id) {
 

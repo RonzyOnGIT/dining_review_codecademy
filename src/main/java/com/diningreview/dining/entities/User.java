@@ -31,8 +31,8 @@ public class User {
     @Column(name = "CITY")
     private String city;
 
-    @Column(name = "STATE")
-    private String state;
+    @Column(name = "STATES")
+    private String states;
 
     @Column(name = "ZIP_CODE")
     private String zipCode;

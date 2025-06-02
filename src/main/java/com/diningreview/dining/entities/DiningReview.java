@@ -29,7 +29,7 @@ public class DiningReview {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "NAME")
+    @Column(name = "REVIEW_NAME")
     private String name;
 
     @Column(name = "PEANUT_SCORE")

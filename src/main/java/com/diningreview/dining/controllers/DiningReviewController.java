@@ -30,6 +30,11 @@ public class DiningReviewController {
         return this.diningReviewService.getPendingReviews();
     }
 
+    @GetMapping("/approved")
+    public List<DiningReview> getApprovedReviews() {
+        return this.diningReviewService.getApprovedReviews();
+    }
+
     // refresher that requestparam gets the queried values from url like approve?approved=true&userName=john
     @PutMapping("/approve")
     public DiningReview approveReview(@RequestBody DiningReview diningReview, @RequestParam Boolean approved, @RequestParam String userName) {        

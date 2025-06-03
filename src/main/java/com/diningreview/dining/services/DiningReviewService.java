@@ -38,6 +38,10 @@ public class DiningReviewService {
         return this.diningReviewRepository.findByReviewStatus(AdminReview.PENDING);
     }
 
+    public List<DiningReview> getApprovedReviews() {
+        return this.diningReviewRepository.findByReviewStatus(AdminReview.APPROVED);
+    }
+
     // either approve or reject review, not just approve
     public DiningReview approveReview(DiningReview diningReview, Boolean approved, String userName) {
 
